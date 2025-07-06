@@ -2,11 +2,22 @@ import mongoose from 'mongoose';
 
 const BudgetSchema = new mongoose.Schema(
   {
-    amount: Number,
-    category: String,
-    month: String,
+    amount: {
+      type: Number,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    month: {
+      type: String,
+      required: true,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 const Budget =
