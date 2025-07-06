@@ -20,7 +20,9 @@ const BudgetSchema = new mongoose.Schema(
   }
 );
 
+// ✅ THIS IS CORRECT
 const Budget =
   mongoose.models.Budget || mongoose.model('Budget', BudgetSchema);
 
+// ✅ DEFAULT EXPORT IS REQUIRED
 export default Budget;

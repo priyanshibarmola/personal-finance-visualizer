@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
-import Budget from '@/models/budget';
+import Budget from '@/models/budget'; // ✅ all lowercase
 
 export async function GET() {
   await connectDB();
-  const budgets = await Budget.find();
+  const budgets = await Budget.find(); // ✅ this will now work
   return NextResponse.json(budgets);
 }
 
