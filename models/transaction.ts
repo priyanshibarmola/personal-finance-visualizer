@@ -1,17 +1,26 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document, models } from 'mongoose';
 
-const TransactionSchema = new mongoose.Schema(
+export interface ITransaction extends Document {
+  amount: number;
+  category: string;
+  type: 'income' | 'expense';
+  date: Date;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const TransactionSchema = new Schema<ITransaction>(
   {
-    type: String,
-    amount: Number,
-    category: String,
-    date: String,
+    amount: { type: Number, required: true },
+    category: { type: String, required: true },
+    type: { type: String, enum: ['income', 'expense'], required: true },
+    date: { type: Date, required: true },
+    description: { type: String },
   },
   { timestamps: true }
 );
 
-// Fix for Vercel hot-reloading: check if model exists
-const Transaction =
-  mongoose.models.Transaction || mongoose.model('Transaction', TransactionSchema);
-
+// ✅ Critical fix to make .find(), .create() callable in TypeScript
+const Transaction = models.Transaction as mongoose.Model<ITransaction> || mongoose.model<ITransaction>('Transaction', TransactionSchema);
 export default Transaction;

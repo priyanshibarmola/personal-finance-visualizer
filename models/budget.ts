@@ -1,28 +1,22 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document, models } from 'mongoose';
 
-const BudgetSchema = new mongoose.Schema(
+export interface IBudget extends Document {
+  amount: number;
+  category: string;
+  month: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const BudgetSchema = new Schema<IBudget>(
   {
-    amount: {
-      type: Number,
-      required: true,
-    },
-    category: {
-      type: String,
-      required: true,
-    },
-    month: {
-      type: String,
-      required: true,
-    },
+    amount: { type: Number, required: true },
+    category: { type: String, required: true },
+    month: { type: String, required: true },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// ✅ THIS IS CORRECT
-const Budget =
-  mongoose.models.Budget || mongoose.model('Budget', BudgetSchema);
-
-// ✅ DEFAULT EXPORT IS REQUIRED
+// ✅ Correct Model Export with Type Inference
+const Budget = models.Budget as mongoose.Model<IBudget> || mongoose.model<IBudget>('Budget', BudgetSchema);
 export default Budget;

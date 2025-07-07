@@ -1,10 +1,16 @@
-// TransactionForm.tsx
 'use client';
 import { useState } from 'react';
 import useSWR from 'swr';
 
 export default function TransactionForm() {
-  const [form, setForm] = useState({ amount: '', date: '', description: '', category: '' });
+  const [form, setForm] = useState({
+    amount: '',
+    date: '',
+    description: '',
+    category: '',
+    type: '', // ✅ added
+  });
+
   const { mutate } = useSWR('/api/transactions');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -15,13 +21,16 @@ export default function TransactionForm() {
     e.preventDefault();
     await fetch('/api/transactions', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         ...form,
         amount: parseFloat(form.amount),
         date: new Date(form.date),
       }),
     });
-    setForm({ amount: '', date: '', description: '', category: '' });
+    setForm({ amount: '', date: '', description: '', category: '', type: '' });
     mutate(); // ⬅️ re-fetch updated data
   };
 
@@ -33,6 +42,7 @@ export default function TransactionForm() {
         className="w-full p-2 border rounded" required />
       <input name="description" placeholder="Description" value={form.description} onChange={handleChange}
         className="w-full p-2 border rounded" required />
+      
       <select name="category" value={form.category} onChange={handleChange}
         className="w-full p-2 border rounded" required>
         <option value="">Select Category</option>
@@ -42,6 +52,15 @@ export default function TransactionForm() {
         <option value="Shopping">Shopping</option>
         <option value="Other">Other</option>
       </select>
+
+      {/* ✅ Type selector added */}
+      <select name="type" value={form.type} onChange={handleChange}
+        className="w-full p-2 border rounded" required>
+        <option value="">Select Type</option>
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+      </select>
+
       <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded w-full">Add Transaction</button>
     </form>
   );
